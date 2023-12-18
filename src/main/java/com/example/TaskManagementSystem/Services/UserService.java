@@ -18,7 +18,7 @@ public class UserService {
 
 
     public String addUser(UserRegistrationDTO userRegistrationDTO) {
-        try {
+//        try {
             User user = new User();
             user.setUserName(userRegistrationDTO.getUserName());
             user.setPassword(userRegistrationDTO.getPassword());
@@ -26,8 +26,8 @@ public class UserService {
 
             userRepository.save(user);
             return "User has been created successfully";
-        }catch (DataIntegrityViolationException e){
-            return "Username is already Taken";
-        }
+//        }catch (DataIntegrityViolationException e){
+//            return "Username is already Taken";
+//        }
     }
 }

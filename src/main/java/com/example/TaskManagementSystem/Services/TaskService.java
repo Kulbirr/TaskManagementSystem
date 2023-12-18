@@ -12,10 +12,11 @@ import com.example.TaskManagementSystem.Repositories.UserRepository;
 import com.example.TaskManagementSystem.RequestDTOS.AddTaskRequest;
 import com.example.TaskManagementSystem.RequestDTOS.UpdateTaskRequest;
 import com.example.TaskManagementSystem.Transformers.AddTaskTransformer;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class TaskService {
 
     public List<Task> getTaskList(Long userId,String userName) throws UserNotFoundException, WrongUserException {
         User authenticatedUser = userRepository.findByUserName(userName);
-        String Admin = Roles.ADMIN.name();
+        String Admin = Roles.ROLE_ADMIN.name();
         Optional<User> optionalUser = userRepository.findById(userId);
 
         if(!optionalUser.isPresent()){
@@ -58,10 +59,8 @@ public class TaskService {
         }
     }
 
-    public List<Task> getAllTasks(){
-        List<Task> allTasksList = new ArrayList<>();
-        allTasksList = taskRepository.findAll();
-        return allTasksList;
+    public Page<Task> getAllTasks(Pageable pageable){
+        return taskRepository.findAll((org.springframework.data.domain.Pageable) pageable);
     }
 
     public Task updateTask(Long taskId, UpdateTaskRequest updateTaskRequest, String userName) throws TaskNotFoundException, WrongUserException{
@@ -71,7 +70,7 @@ public class TaskService {
             throw new TaskNotFoundException("No task present with taskId: " + taskId);
         }
         Task task = optionalTask.get();
-        String Admin = Roles.ADMIN.name();
+        String Admin = Roles.ROLE_ADMIN.name();
         if(user.getId().equals(task.getUser().getId()) || user.getRole().name().equals(Admin)) {
             task.setTitle(updateTaskRequest.getTitle());
             task.setDescription(updateTaskRequest.getDescription());
@@ -92,7 +91,7 @@ public class TaskService {
             throw new TaskNotFoundException("No task present with taskId: " + taskId);
         }
         Task task = optionalTask.get();
-        String Admin = Roles.ADMIN.name();
+        String Admin = Roles.ROLE_ADMIN.name();
         if(user.getId().equals(task.getUser().getId()) || user.getRole().name().equals(Admin)) {
             task.setStatus(TaskStatus.COMPLETED);
             return task;
@@ -109,7 +108,7 @@ public class TaskService {
             throw new TaskNotFoundException("No task present with taskId: " + taskId);
         }
         Task task = optionalTask.get();
-        String Admin = Roles.ADMIN.name();
+        String Admin = Roles.ROLE_ADMIN.name();
         if(user.getId().equals(task.getUser().getId()) || user.getRole().name().equals(Admin)) {
             taskRepository.delete(task);
         }else{
