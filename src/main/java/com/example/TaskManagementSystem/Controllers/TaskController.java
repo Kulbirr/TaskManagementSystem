@@ -10,6 +10,7 @@ import com.example.TaskManagementSystem.Repositories.UserRepository;
 import com.example.TaskManagementSystem.RequestDTOS.AddTaskRequest;
 import com.example.TaskManagementSystem.RequestDTOS.UpdateTaskRequest;
 import com.example.TaskManagementSystem.Services.TaskService;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +34,6 @@ public class TaskController {
     private UserRepository userRepository;
 
     @PostMapping("/add")
-
     private ResponseEntity addTask(@RequestBody AddTaskRequest addTaskRequest) {
             String result = taskService.addTask(addTaskRequest);
             return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
@@ -147,4 +147,6 @@ public class TaskController {
             return new ResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
+
+
 }
